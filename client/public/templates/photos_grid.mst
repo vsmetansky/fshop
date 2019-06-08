@@ -1,0 +1,33 @@
+<div id="items" class="card-columns">
+    {{#items}}
+    <div class="card shadow-sm mb-5">
+        <a href="/photos/{{_id}}">
+            <img class="card-img-top" src={{path}} alt="Card image cap">
+        </a>
+        <div class="card-body">
+            <div class="row float-left">
+                <div class="col float-left">
+                    <a href="/users/{{author._id}}" class="my-1">
+                        <img width="30" height="30" class="center-cropped rounded-circle" src={{author.avaUrl}}>
+                    </a>
+                </div>
+            </div>
+
+            <button class="btn btn-light float-right" onclick="location.href='{{path}}'">
+                <i data-feather="download"></i>
+            </button>
+
+            {{#isUsersAlbum}}
+            <form action="/albums/remove" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="album" value="{{album}}">
+                <input type="hidden" name="photoId" value="{{_id}}">
+                <button class="btn btn-light float-right" type="submit">
+                    <i data-feather="x"></i>
+                </button>
+            </form>
+            {{/isUsersAlbum}}
+
+        </div>
+    </div>
+    {{/items}}
+</div>

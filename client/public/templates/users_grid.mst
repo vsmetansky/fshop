@@ -1,0 +1,93 @@
+<div class="card-columns">
+    {{#items}}
+    <div class="card shadow-sm mb-5 pb-0">
+        <div class="card-header text-center border-0">
+            <div class="row">
+                <div class="col">
+                    <button class="btn btn-light float-left" data-toggle="modal" data-target="#deletionModal{{_id}}">
+                        <i data-feather="trash"></i>
+                    </button>
+                </div>
+                <div class="col">
+                    <button class="btn btn-light float-right" data-toggle="modal" data-target="#updateModal{{_id}}">
+                        <i data-feather="edit"></i>
+                    </button>
+                </div>
+            </div>
+            <a href="/users/{{_id}}">
+                <div class="row">
+                    <div class="col">
+                        <img class="my-3 center-cropped rounded-circle" src="{{avaUrl}}">
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="card-body text-center">
+            <h4 class="" card-title>{{fullname}}</h4>
+        </div>
+    </div>
+
+    <!-- Update Modal -->
+    <div class="modal fade" id="updateModal{{_id}}" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content border-0">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title">Update {{fullname}}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <i data-feather="x"></i>
+                    </button>
+                </div>
+                <div class="modal-body border-0">
+                    <form action="/users/update" method="POST" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" name="email" value={{email}} class="form-control" placeholder={{email}}
+                                required>
+                        </div>
+                        <div class="form-group">
+                            <label>Fullname</label>
+                            <input type="text" name="fullname" value="{{fullname}}" class="form-control" placeholder={{fullname}}
+                                required>
+                        </div>
+
+                        <label>File</label>
+                        <div class="custom-file">
+                            <input type="file" name="ava" class="custom-file-input" id="customFile">
+                            <label class="custom-file-label" for="customFile">Choose avatar...</label>
+                        </div>
+                        <input type="hidden" name="updated" value={{_id}}>
+
+                        <button type="submit" class="btn mt-4 mb-1 btn-dark float-right">Update</button>
+                        <button type="button" class="btn mt-4 mb-1 mr-2 btn-secondary float-right" data-dismiss="modal">Cancel</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Deletion Modal -->
+    <div class="modal fade" id="deletionModal{{_id}}" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content border-0">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title">Delete {{fullname}}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <i data-feather="x"></i>
+                    </button>
+                </div>
+                <div class="modal-body border-0">
+                    <p class="card-text">Are you shure, brother?</p>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <form action="/users/delete" method="POST" enctype="multipart/form-data">
+                        <input type="hidden" name="deleted" value={{_id}}>
+                        <button class="btn btn-danger" type="submit">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{/items}}
+</div>

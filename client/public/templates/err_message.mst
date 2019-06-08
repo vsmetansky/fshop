@@ -1,0 +1,3 @@
+<div id="error" class="alert alert-danger">
+    <strong>Registration error: </strong>{{error_msg}}
+</div>

@@ -1,0 +1,9 @@
+<a class="router-link nav-item nav-link mx-3" href="http://localhost:3000">Home</a>
+<a class="router-link nav-item nav-link mx-3" href="http://localhost:3000/flowers">Flowers</a>
+<a class="router-link nav-item nav-link mx-3" href="http://localhost:3000/orders">Orders</a>
+{{#admin}}
+    <a class="router-link nav-item nav-link mx-3" href="http://localhost:3000/users">Users</a>
+{{/admin}}
+{{^admin}}
+    <a class="router-link nav-item nav-link mx-3" href="http://localhost:3000/profile">Profile</a>
+{{/admin}}
