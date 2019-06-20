@@ -17,7 +17,6 @@ import { flowersRouter } from './routes/flowers';
 import { adressesRouter } from './routes/adresses';
 
 //fckn requires, fckn nodejs
-const busboyBodyParser = require('busboy-body-parser');
 const cloudinary = require('cloudinary');
 
 cloudinary.config({
@@ -33,7 +32,6 @@ const connectOptions = {
     useNewUrlParser: true
 };
 
-server.use(cors());
 
 // server.set('views', './views');
 server.use(express.static(__dirname + '/../client/public'));
@@ -42,16 +40,13 @@ server.use(express.static(__dirname + '/../client/public'));
 server.use(bodyParser.urlencoded({
     extended: true
 }));
-server.use(busboyBodyParser({
-    limit: '30mb'
-}));
 server.use(bodyParser.json());
 server.use(cookieParser()); 
 
 //auth stuff
 server.use(session({
     secret: "c$xznlij+%nreov_nr9848j93jp8$2r7rgh9p$9hpd310--0=1d03=13'mpwx`9821rf$7290,.2;>k3eijp6e",
-    resave: false,
+    resave: true,
     saveUninitialized: true
 }));
 server.use(passport.initialize());
@@ -63,6 +58,8 @@ server.use('/adresses', adressesRouter);
 server.use('/orders', ordersRouter);
 server.use('/users', usersRouter);
 server.use('/flowers', flowersRouter);
+
+server.use(cors());
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

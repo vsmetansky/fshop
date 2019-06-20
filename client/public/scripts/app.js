@@ -10,26 +10,27 @@ import Router from './router.js';
 import AppNav from './appnav.js';
 //routes
 import Main from './routes/main.js';
-import Flowers from './routes/flowers.js';
-const ROUTES = [Main, Flowers];
+import Flower from './routes/flowers/flower.js';
+import Flowers from './routes/flowers/flowers.js';
+import Auth from './routes/auth.js';
+import Profile from './routes/profile.js';
+import Users from './routes/users.js';
+import Orders from './routes/orders/orders.js';
+import { BagBuffer } from './routes/orders/bagbuffer.js';
+const ROUTES = [Main, Flowers, Flower, Auth, Profile, Users, Orders, BagBuffer];
 //main app
 export default class App {
     constructor() { }
-    static start() {
-        return __awaiter(this, void 0, void 0, function* () {
-            yield App.setCurrentRoute(Main);
-        });
-    }
-    static setCurrentRoute(route) {
+    static setCurrentRoute(route, data) {
         return __awaiter(this, void 0, void 0, function* () {
             if (route !== undefined) {
                 this._currentRoute = route;
                 yield AppNav.render();
-                yield this._currentRoute.render();
+                yield this._currentRoute.render(data);
             }
         });
     }
 }
 //starting app
-App.start();
 Router.listen(ROUTES);
+BagBuffer.listen();

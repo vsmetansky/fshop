@@ -6,8 +6,37 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-export default class Route {
-    static render() {
+class Route {
+    //abstract method
+    static render(data, routeData = undefined) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const app = document.getElementById('app');
+            if (app !== null) {
+                routeData = yield this.getRouteData(data, routeData);
+                yield this.renderTemplate(app, routeData);
+                this.setLinks(app);
+                this.setLinkHandlers(app, routeData);
+            }
+        });
+    }
+    //primitive method
+    static getRouteData(data, routeData) {
         return __awaiter(this, void 0, void 0, function* () { });
     }
+    //primitive method
+    static renderTemplate(app, routeData) {
+        return __awaiter(this, void 0, void 0, function* () { });
+    }
+    //primitive method
+    static setLinks(app) { }
+    //primitive method
+    static setLinkHandlers(app, routeData) { }
 }
+class RouteProxy extends Route {
+    static render(data, routeData = undefined) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.route.render(data, routeData);
+        });
+    }
+}
+export { Route, RouteProxy };

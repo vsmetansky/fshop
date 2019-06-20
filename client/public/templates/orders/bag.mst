@@ -1,0 +1,18 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <button id="submit-btn" class="btn btn-light mb-2">Order</button>
+            
+            {{#items}}
+            <div class="card shadow-sm mb-5">
+                <div class="card-body pb-0">
+                    <a class="router-link float-left" href="/flower" data-id={{_id}}>
+                        <h6>{{name}}</h6>
+                    </a>
+                    <h6 class="float-right">Price: {{price}}</h6>
+                </div>
+            </div>
+            {{/items}}
+        </div>
+    </div>
+</div>

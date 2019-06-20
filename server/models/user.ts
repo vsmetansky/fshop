@@ -1,4 +1,4 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose, { Schema, Query } from 'mongoose';
 
 import Storage from './storage'
 
@@ -6,7 +6,7 @@ const UserSchema: Schema = new Schema({
     email: { type: String, required: true },
     password: { type: String, required: true },
     fullname: { type: String, required: true },
-    admin: { type: Boolean, required: true, default: false },
+    admin: { type: Boolean, default: false },
     orders: [{ type: Schema.Types.ObjectId, ref: 'Order' }],
     adresses: [{ type: Schema.Types.ObjectId, ref: 'Adress' }]
 });
@@ -29,8 +29,8 @@ export default class User extends Storage {
     protected static get model() {
         return UserModel;
     }
-    protected static async populator(items: any) {
-        return items.populate('orders').populate('adresses').sort('-date').exec();
+    protected static async populator(items: Query<User>) {
+        return items.populate('orders').populate('adresses').exec();
     }
 }
 

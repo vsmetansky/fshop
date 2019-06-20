@@ -1,37 +1,19 @@
 import * as express from 'express'
+import multer from 'multer'
+
 import { checkAdmin, checkAuth, checkCurrent } from './auth'
 import Flower from '../models/flower'
 import Error from '../error'
+import CloudPhoto from './util/cloudphoto'
+import Photo from '../models/util/photo';
 
 const router = express.Router();
+const upload = multer();
 
-router.get('/', checkAuth, async (req, res) => {
+router.get('/', async (req, res) => {
 	try {
-		res.send(await Flower.getById(req.user));
-	} catch (err) {
-		res.send(new Error(500, err.message));
-	}
-});
-
-router.delete('/me', checkAuth, async (req, res) => {
-	try {
-		res.send(await Flower.delete(req.user));
-	} catch (err) {
-		res.send(new Error(500, err.message));
-	}
-});
-
-router.put('/me', checkAuth, async (req, res) => {
-	try {
-		//res.send(await User.update())
-	} catch (err) {
-		res.send(new Error(500, err.message));
-	}
-})
-
-router.get('/', checkAdmin, async (req, res) => {
-	try {
-		res.send(await Flower.getAll())
+		const flowers = await Flower.getAll();
+		res.send(flowers);
 	} catch (err) {
 		res.send(new Error(500, err.message));
 	}
@@ -39,26 +21,33 @@ router.get('/', checkAdmin, async (req, res) => {
 
 router.get('/:id', checkAdmin, async (req, res) => {
 	try {
-		const user = await Flower.getById(req.params.id);
-		if (user) return res.send(user);
+		const flower = await Flower.getById(req.params.id);
+		if (flower) return res.send(flower);
 		res.send(new Error(404, 'bullshit'));
 	} catch (err) {
 		res.send(new Error(500, err.message));
 	}
 });
 
-router.delete('/:id', checkAdmin, async (req, res) => {
+router.delete('/:id', async (req, res) => {
 	try {
-		res.send(await Flower.delete(req.params.id));
+		const deleted = await Flower.delete(req.params.id);
+		await CloudPhoto.rem(deleted.photo.cloudId);
+		res.send(deleted);
 	} catch (err) {
 		res.send(new Error(500, err.message));
 	}
 });
 
-router.post('/:id', async (req, res) => {
+router.post('/', upload.single('photo'), async (req, res) => {
 	try {
-		//res.send(await User.insert(new User()))
-	} catch (err) {
+		let data = req.body;
+		const fileObject: any = req.file;
+		const photo: any = await CloudPhoto.add(fileObject.buffer);
+		const flower = await Flower.insert(new Flower(data.name, data.price, new Photo(photo.public_id, photo.secure_url)));
+		res.send(flower);
+	} catch(err) {
+		console.log(err.message);
 		res.send(new Error(500, err.message));
 	}
 });

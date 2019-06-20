@@ -1,0 +1,123 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card shadow-sm">
+                <div class="card-header text-center border-0">
+                    <div class="row">
+                        <div class="col">
+                            {{#isAdmin}}
+                                <button class="btn btn-light float-left" data-toggle="modal"
+                                    data-target="#deletionModal">
+                                    <i data-feather="trash"></i>
+                                </button>
+                            {{/isAdmin}}
+                        </div>
+                        <div class="col">
+                            {{#isAdmin}}
+                                <button class="btn btn-light float-right" data-toggle="modal"
+                                    data-target="#updateModal">
+                                    <i data-feather="edit"></i>
+                                </button>
+                            {{/isAdmin}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <img class="my-3 center-cropped rounded-circle" src="{{item.avaUrl}}">
+                            <h1 class="card-title my-2">{{item.fullname}}</h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    {{#isUser}}
+                        <form id="logout-form">
+                            <button class="btn btn-light mr-3 float-right" type="submit">Log out</button>
+                        </form>
+                    {{/isUser}}
+                </div>
+            </div>
+
+            <!-- Deletion Modal -->
+            <div class="modal fade" id="deletionModal" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content border-0">
+                        <div class="modal-header border-0">
+                            <h5 class="modal-title">Delete {{item.fullname}}</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <i data-feather="x"></i>
+                            </button>
+                        </div>
+                        <div class="modal-body border-0">
+                            <p class="card-text">Are you sure, brother?</p>
+                        </div>
+                        <div class="modal-footer border-0">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                            <form action="/users/delete" method="POST" enctype="multipart/form-data">
+                                <input type="hidden" name="deleted" value={{item._id}}>
+                                <button class="btn btn-danger" type="submit">Delete</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Update Modal -->
+            <div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content border-0">
+                        <div class="modal-header border-0">
+                            <h5 class="modal-title">Update {{item.fullname}}</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <i data-feather="x"></i>
+                            </button>
+                        </div>
+                        <div class="modal-body border-0">
+                            <form action="/users/update" method="POST" enctype="multipart/form-data">
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="email" name="email" value="{{item.email}}" class="form-control"
+                                        placeholder={{item.email}} required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Fullname</label>
+                                    <input type="text" name="fullname" value="{{item.fullname}}" class="form-control"
+                                        placeholder={{user.fullname}} required>
+                                </div>
+
+                                {{#roleChanger}}
+                                    <div class="form-group custom-control custom-checkbox">
+                                        <input type="checkbox" name="admin" value="true" class="custom-control-input"
+                                            id="customCheck">
+                                        <label class="custom-control-label" for="customCheck">Make user an admin</label>
+                                    </div>
+                                {{/roleChanger}}
+
+                                <label>File</label>
+                                <div class="custom-file">
+                                    <input type="file" name="ava" class="custom-file-input" id="customFile">
+                                    <label class="custom-file-label" for="customFile">Choose avatar...</label>
+                                </div>
+
+                                <input type="hidden" name="updated" value={{item._id}}>
+                                <button type="submit" class="btn mt-4 mb-1 btn-dark float-right">Update</button>
+                                <button type="button" class="btn mt-4 mb-1 mr-2 btn-secondary float-right"
+                                    data-dismiss="modal">Cancel</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                feather.replace({
+                    'height': 20,
+                    'color': 'grey',
+                    'viewBox': '0 0 28 28',
+                    'width': 20,
+                    'stroke-width': 2
+                })
+            </script>
+
+        </div>
+    </div>
+</div>

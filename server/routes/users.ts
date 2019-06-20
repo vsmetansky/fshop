@@ -1,9 +1,13 @@
 import * as express from 'express'
 import { checkAdmin, checkAuth, checkCurrent } from './auth'
+import * as bcrypt from 'bcrypt'
+import multer from 'multer'
+
 import User from '../models/user'
 import Error from '../error'
 
 const router = express.Router();
+const upload = multer();
 
 router.get('/me', checkAuth, async (req, res) => {
 	try {
@@ -29,9 +33,9 @@ router.put('/me', checkAuth, async (req, res) => {
 	}
 })
 
-router.get('/', checkAdmin, async (req, res) => {
+router.get('/', async (req, res) => {
 	try {
-		res.send(await User.getAll())
+		res.send(await User.getAll());
 	} catch (err) {
 		res.send(new Error(500, err.message));
 	}
@@ -55,11 +59,15 @@ router.delete('/:id', checkAdmin, async (req, res) => {
 	}
 });
 
-router.post('/', async (req, res) => {
+router.post('/', upload.none(), async (req, res) => {
 	try {
-		let user = new User('a', 'b', 'c', false);
+		let data = req.body;
+		const saltRounds = 1;
+		data.password = await bcrypt.hash(data.password, saltRounds);
+		const user = new User(data.email, data.password, data.fullname);
 		res.send(await User.insert(user))
 	} catch (err) {
+		console.log(err.message);
 		res.send(new Error(500, err.message));
 	}
 });

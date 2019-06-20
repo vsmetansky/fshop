@@ -17,11 +17,48 @@ export default class Flowers extends Route {
                 const template = (yield axios.get('http://localhost:3000/templates/flowers_grid.mst')).data;
                 app.innerHTML = Mustache.render(template, {
                     items: flowers,
-                    isAdmin: Flowers.userState === UserStateType.ADMIN ? true : false
+                    admin: Flowers.userState.cur === UserStateType.ADMIN ? true : false
                 });
+                Flowers.links.push(app.querySelector('#flowerForm'));
+                Flowers.setLinks();
+                //Flowers.links.push(app.querySelector('#flowers-adder'));
             }
+        });
+    }
+    static setLinks() {
+        Flowers.links.forEach((link) => {
+            if (link.id === 'flowerForm') {
+                link.addEventListener('submit', preventFormSubmittion);
+                link.addEventListener('submit', Flowers.addFlower);
+            }
+        });
+        function preventFormSubmittion(event) {
+            event.preventDefault();
+        }
+    }
+    static addFlower() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const form = Flowers.links.find((l) => l.id === 'flowerForm');
+            const name = form.querySelector('#name').value;
+            const price = form.querySelector('#price').value;
+            const photo = form.querySelector('#photo').value;
+            const flowerData = new FormData();
+            flowerData.set('name', name);
+            flowerData.set('price', price);
+            flowerData.set('photo', photo);
+            const flower = (yield axios.post('http://localhost:3000/flowers', flowerData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            })).data;
+            history.pushState({}, '', '/flower');
+            window.dispatchEvent(new CustomEvent('popstate', {
+                detail: {
+                    id: flower._id
+                },
+            }));
         });
     }
 }
 Flowers.adress = '/flowers';
-Flowers.userState = new UserState(UserStateType.USER);
+Flowers.userState = new UserState();

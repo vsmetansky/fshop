@@ -8,7 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import App from './app.js';
 import AppNav from './appnav.js';
-import Auth from './util/auth.js';
+import User from './util/user.js';
 import { UserStateType } from './util/userstate.js';
 export default class Router {
     constructor() { }
@@ -17,9 +17,13 @@ export default class Router {
     }
     static listen(routes) {
         Router.init(routes);
-        window.addEventListener('popstate', () => __awaiter(this, void 0, void 0, function* () {
+        window.addEventListener('load', Router.updateRoute);
+        window.addEventListener('popstate', Router.updateRoute);
+    }
+    static updateRoute(event) {
+        return __awaiter(this, void 0, void 0, function* () {
             let curRoute = undefined;
-            let curState = Router.getCurUserState();
+            let curState = yield Router.getCurUserState();
             Router.routes.forEach((r) => {
                 if (curRoute === undefined) {
                     curRoute = r.adress === window.location.pathname ? r : undefined;
@@ -27,12 +31,16 @@ export default class Router {
                 r.userState.update(curState);
             });
             AppNav.userState.update(curState);
-            yield App.setCurrentRoute(curRoute);
-        }));
+            yield App.setCurrentRoute(curRoute, event.detail);
+        });
     }
     static getCurUserState() {
         return __awaiter(this, void 0, void 0, function* () {
-            return Auth.isAdmin(yield Auth.getCurUser()) ? UserStateType.ADMIN : UserStateType.USER;
+            const user = yield User.getCurUser();
+            if (User.isLoggedIn(user)) {
+                return user.admin ? UserStateType.ADMIN : UserStateType.USER;
+            }
+            return UserStateType.GUEST;
         });
     }
 }

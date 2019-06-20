@@ -2,11 +2,12 @@ var UserStateType;
 (function (UserStateType) {
     UserStateType[UserStateType["ADMIN"] = 0] = "ADMIN";
     UserStateType[UserStateType["USER"] = 1] = "USER";
+    UserStateType[UserStateType["GUEST"] = 2] = "GUEST";
 })(UserStateType || (UserStateType = {}));
 class UserState {
-    constructor(cur) {
+    constructor() {
         this.prev = -1;
-        this.cur = cur;
+        this.cur = -1;
     }
     update(cur) {
         this.prev = this.cur;

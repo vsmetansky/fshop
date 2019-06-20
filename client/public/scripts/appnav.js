@@ -15,16 +15,17 @@ export default class AppNav {
                 if (menu !== null) {
                     const template = (yield axios.get('http://localhost:3000/templates/nav_main.mst')).data;
                     menu.innerHTML = Mustache.render(template, {
-                        admin: AppNav.userState.cur === UserStateType.ADMIN ? true : false
+                        admin: AppNav.userState.cur === UserStateType.ADMIN ? true : false,
+                        loggedIn: AppNav.userState.cur === UserStateType.GUEST ? false : true
                     });
-                    AppNav._links = Array.prototype.slice.call(menu.childNodes);
-                    AppNav.setLinks();
+                    AppNav.links = Array.prototype.slice.call(menu.childNodes);
+                    AppNav.setLinkHandlers();
                 }
             }
         });
     }
-    static setLinks() {
-        AppNav._links.forEach((link) => {
+    static setLinkHandlers() {
+        AppNav.links.forEach((link) => {
             link.addEventListener('click', (event) => {
                 history.pushState({}, '', link.getAttribute("href"));
                 window.dispatchEvent(new Event('popstate'));
@@ -33,4 +34,4 @@ export default class AppNav {
         });
     }
 }
-AppNav.userState = new UserState(UserStateType.USER);
+AppNav.userState = new UserState();

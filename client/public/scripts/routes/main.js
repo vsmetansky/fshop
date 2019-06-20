@@ -6,10 +6,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import Route from './route.js';
-import { UserState, UserStateType } from '../util/userstate.js';
+import { Route } from './route.js';
+import { UserState } from '../util/userstate.js';
 export default class Main extends Route {
-    static render() {
+    static render(data) {
         return __awaiter(this, void 0, void 0, function* () {
             const app = document.getElementById('app');
             if (app !== null) {
@@ -20,4 +20,4 @@ export default class Main extends Route {
     }
 }
 Main.adress = '/';
-Main.userState = new UserState(UserStateType.USER);
+Main.userState = new UserState();

@@ -1,3 +1,5 @@
+import { Query } from "mongoose";
+
 export default abstract class Storage {
     static async insert(x: any) {
         const Model = this.model;
@@ -11,14 +13,14 @@ export default abstract class Storage {
     }
     //template method
     static async getAll() {
-        return this.populator(await this.model.find());
+        return Storage.populator(await this.model.find());
     }
     //template method
     static async getById(id: string) {
-        return this.populator(await this.model.findById(id));
+        return Storage.populator(await this.model.findById(id));
     }
     //primitive method
-    protected static async populator(items: any) {
+    protected static async populator(items: Query<any>) {
         return items;
     }
     protected static get model(): any { 

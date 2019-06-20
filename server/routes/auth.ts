@@ -1,15 +1,15 @@
-import * as express from 'express'
+import express from 'express'
 import * as bcrypt from 'bcrypt'
 import passport from 'passport'
+import multer from 'multer'
 
 import User from '../models/user'
 import Config from '../config'
 
 const router = express.Router();
+const upload = multer();
 
 const LocalStrategy = require('passport-local').Strategy;
-
-passport.use(new LocalStrategy(strategy));
 
 passport.serializeUser((user: any, done: Function) => {
 	done(null, user._id);
@@ -24,37 +24,38 @@ passport.deserializeUser(async (id: string, done: Function) => {
 	}
 });
 
-router.post('/login',
-	passport.authenticate('local'),
+passport.use(new LocalStrategy({ usernameField: "email", passwordField: "password" }, strategy));
+
+router.post('/login', upload.none(), passport.authenticate('local'),
 	(req, res) => {
 		res.send(req.user);
 	});
 
-router.post('/logout', (req, res) => {	
+router.get('/logout', upload.none(), (req, res) => {
 	req.logout();
-	res.redirect(Config.websiteUrl);
+	res.end();
 });
 
 function checkAuth(
-	req: express.Request,
-	res: express.Response,
-	next: Function) {
+	req: any,
+	res: any,
+	next: any) {
 	if (!req.user) res.send({});
 	else next();
 }
 
-async function checkAdmin(
-	req: express.Request,
-	res: express.Response,
-	next: Function) {
+function checkAdmin(
+	req: any,
+	res: any,
+	next: any) {
 	if (req.user && req.user.admin) next();
 	res.redirect(Config.websiteUrl);
 }
 
-async function checkCurrent(
-	req: express.Request,
-	res: express.Response,
-	next: Function) {
+function checkCurrent(
+	req: any,
+	res: any,
+	next: any) {
 	if (req.user) {
 		const sessionId = req.user._id.toString();
 		if (sessionId === req.params.id) next();
@@ -69,8 +70,8 @@ async function strategy(email: string, password: string, done: Function) {
 			return u.email === email;
 		});
 		if (user !== undefined) {
-			const match = await bcrypt.compare(user.password, password);
-			if (match) done(null, user);
+			const match = await bcrypt.compare(password, user.password);
+			if (match) return done(null, user);
 		}
 		done(null, undefined);
 	} catch (err) {

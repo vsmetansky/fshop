@@ -1,0 +1,16 @@
+{{#item}}
+    <div id={{_id}} class="card shadow-sm mb-5">
+        <a class="router-link" href="/flower" data-id="{{_id}}">
+            <img class="card-img-top" src={{photo.path}} alt="Card image cap">
+        </a>
+        <div class="card-body">
+            <p class="float-left">{{price}}</p>
+            {{^admin}}
+                <button id="buy-btn" data-id="{{_id}}" class="float-right">Buy</button>
+            {{/admin}}
+            {{#admin}}
+                <button id="delete-btn" data-id="{{_id}}" class="float-right">Delete</button>
+            {{/admin}}
+        </div>
+    </div>
+{{/item}}

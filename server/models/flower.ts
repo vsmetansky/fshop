@@ -12,11 +12,12 @@ const FlowerSchema: Schema = new Schema({
 export default class Flower extends Storage {
     name: string;
     price: number;
-    photos: Photo;
-    constructor(_name: string, _price: number) {
+    photo: Photo;
+    constructor(_name: string, _price: number, _photo: Photo) {
         super();
         this.price = _price;
         this.name = _name;
+        this.photo = _photo;
     }
     protected static get model() {
         return FlowerModel;

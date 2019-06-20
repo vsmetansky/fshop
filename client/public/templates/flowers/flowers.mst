@@ -1,0 +1,57 @@
+<div clas="container" style="margin-top:5%;">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            {{#isAdmin}}
+                <button id="flowers-adder" class="btn btn-light mb-2" data-toggle="modal"
+                    data-target="#newFlowerModal">Add
+                    flower</button>
+            {{/isAdmin}}
+            <div class="container-fluid">
+                <div class="row" id="card-set">
+                    {{#items}}
+                        <div class="col-sm d-flex">
+                            <div id={{_id}} class="card shadow-sm mb-5">
+                                <a class="router-link" href="/flower" data-id="{{_id}}">
+                                    <img class="card-img-top" src={{photo.path}} alt="Card image cap">
+                                </a>
+                                <div class="card-body">
+                                    <p class="float-left">{{price}}</p>
+                                    {{^isAdmin}}
+                                        <button id="buy-btn" data-id="{{_id}}" class="float-right">Buy</button>
+                                    {{/isAdmin}}
+                                    {{#isAdmin}}
+                                        <button id="delete-btn" data-id="{{_id}}" class="float-right">Delete</button>
+                                    {{/isAdmin}}
+                                </div>
+                            </div>
+                        </div>
+                    {{/items}}
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="newFlowerModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="newFlowerModalTitle">Add flower</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="flowerForm">
+                    <input type="text" class="form-control" id="name" placeholder="Name" required>
+                    <input type="number" class="form-control" id="price" placeholder="Price in UAH" required>
+                    <input type="file" class="form-control" id="photo" placeholder="Photo" required>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" id="flowerAdd" class="btn btn-dark">Add</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

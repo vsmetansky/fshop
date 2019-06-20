@@ -1,9 +1,17 @@
 <a class="router-link nav-item nav-link mx-3" href="http://localhost:3000">Home</a>
 <a class="router-link nav-item nav-link mx-3" href="http://localhost:3000/flowers">Flowers</a>
-<a class="router-link nav-item nav-link mx-3" href="http://localhost:3000/orders">Orders</a>
-{{#admin}}
-    <a class="router-link nav-item nav-link mx-3" href="http://localhost:3000/users">Users</a>
-{{/admin}}
-{{^admin}}
+
+{{#loggedIn}}
+    {{#admin}}
+        <a class="router-link nav-item nav-link mx-3" href="http://localhost:3000/users">Users</a>
+        <a class="router-link nav-item nav-link mx-3" href="http://localhost:3000/orders">Orders</a>
+    {{/admin}}
+    {{^admin}}
+        <a class="router-link nav-item nav-link mx-3" href="http://localhost:3000/bag">Bag</a>
+    {{/admin}}
     <a class="router-link nav-item nav-link mx-3" href="http://localhost:3000/profile">Profile</a>
-{{/admin}}
+{{/loggedIn}}
+{{^loggedIn}}
+    <a class="router-link nav-item nav-link mx-3" href="http://localhost:3000/bag">Bag</a>
+    <a class="router-link nav-item nav-link mx-3" href="http://localhost:3000/auth">Enter</a>
+{{/loggedIn}}

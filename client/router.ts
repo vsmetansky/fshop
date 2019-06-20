@@ -1,9 +1,7 @@
 import App from './app.js';
 import AppNav from './appnav.js';
-import Auth from './util/auth.js';
+import User from './util/user.js';
 import { UserStateType } from './util/userstate.js';
-
-declare let axios: any;
 
 export default class Router {
     static routes: any = [];
@@ -13,20 +11,26 @@ export default class Router {
     }
     static listen(routes: any[]) {
         Router.init(routes);
-        window.addEventListener('popstate', async () => {
-            let curRoute: any = undefined;
-            let curState = Router.getCurUserState();
-            Router.routes.forEach((r: any) => {
-                if (curRoute === undefined) {
-                    curRoute = r.adress === window.location.pathname ? r : undefined;
-                }
-                r.userState.update(curState);
-            });
-            AppNav.userState.update(curState);
-            await App.setCurrentRoute(curRoute);
+        window.addEventListener('load', Router.updateRoute)
+        window.addEventListener('popstate', Router.updateRoute);
+    }
+    private static async updateRoute(event: any) {
+        let curRoute: any = undefined;
+        let curState = await Router.getCurUserState();
+        Router.routes.forEach((r: any) => {
+            if (curRoute === undefined) {
+                curRoute = r.adress === window.location.pathname ? r : undefined;
+            }
+            r.userState.update(curState);
         });
+        AppNav.userState.update(curState);
+        await App.setCurrentRoute(curRoute, event.detail);
     }
     private static async getCurUserState() {
-        return Auth.isAdmin(await Auth.getCurUser()) ? UserStateType.ADMIN : UserStateType.USER;
+        const user = await User.getCurUser();
+        if (User.isLoggedIn(user)) {
+            return user.admin ? UserStateType.ADMIN : UserStateType.USER;
+        }
+        return UserStateType.GUEST;
     }
 }

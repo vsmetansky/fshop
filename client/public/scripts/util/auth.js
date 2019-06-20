@@ -9,15 +9,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 export default class Auth {
     constructor() { }
     static isLoggedIn(user) {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (user !== {})
-                return true;
-            return false;
-        });
+        return user.toString() !== {}.toString();
     }
     static isAdmin(user) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (user !== {})
+            if (Auth.isLoggedIn(user))
                 return user.admin;
             return false;
         });
