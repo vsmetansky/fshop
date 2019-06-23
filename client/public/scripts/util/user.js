@@ -9,10 +9,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 export default class User {
     constructor() { }
     static isLoggedIn(user) {
-        return user.email !== undefined;
+        if (user !== undefined)
+            return user.email !== undefined;
+        return false;
     }
     static isError(user) {
-        return user.code !== undefined;
+        if (user !== undefined)
+            return user.code !== undefined;
+        return false;
     }
     static isAdmin(user) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -23,7 +27,8 @@ export default class User {
     }
     static getCurUser() {
         return __awaiter(this, void 0, void 0, function* () {
-            return (yield axios.get('http://localhost:3000/users/me')).data;
+            const user = (yield axios.get('http://localhost:3000/users/me')).data;
+            return user.email === undefined ? undefined : user;
         });
     }
 }

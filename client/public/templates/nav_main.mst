@@ -3,7 +3,6 @@
 
 {{#loggedIn}}
     {{#admin}}
-        <a class="router-link nav-item nav-link mx-3" href="http://localhost:3000/users">Users</a>
         <a class="router-link nav-item nav-link mx-3" href="http://localhost:3000/orders">Orders</a>
     {{/admin}}
     {{^admin}}

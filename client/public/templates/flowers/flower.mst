@@ -1,16 +1,26 @@
-{{#item}}
-    <div id={{_id}} class="card shadow-sm mb-5">
-        <a class="router-link" href="/flower" data-id="{{_id}}">
-            <img class="card-img-top" src={{photo.path}} alt="Card image cap">
-        </a>
-        <div class="card-body">
-            <p class="float-left">{{price}}</p>
-            {{^admin}}
-                <button id="buy-btn" data-id="{{_id}}" class="float-right">Buy</button>
-            {{/admin}}
-            {{#admin}}
-                <button id="delete-btn" data-id="{{_id}}" class="float-right">Delete</button>
-            {{/admin}}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 justify-content-center">
+            {{#item}}
+                <div class="card shadow-sm pb-0">
+                    <div class="card-header border-0"></div>
+                    <div style="height: 70vh; width: 100%; overflow:hidden; background: white;" class="text-center">
+                        <img src="{{photo.path}}" class="text-center" style="height: 100%; width: auto">
+                    </div>
+                    <div class="card-footer border-0">
+                        {{#isAdmin}}
+                        <button id="delete-btn" class="btn btn-light float-right" data-id="{{_id}}">
+                            Delete
+                        </button>
+                        {{/isAdmin}}
+                        {{^isAdmin}}
+                        <button id="buy-btn" class="btn btn-light float-right" data-id="{{_id}}">
+                            Buy
+                        </button>
+                        {{/isAdmin}}
+                    </div>
+                </div>
+            {{/item}}
         </div>
     </div>
-{{/item}}
+</div>

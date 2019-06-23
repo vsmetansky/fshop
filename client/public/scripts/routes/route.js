@@ -7,7 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 class Route {
-    //abstract method
+    //template method
     static render(data, routeData = undefined) {
         return __awaiter(this, void 0, void 0, function* () {
             const app = document.getElementById('app');

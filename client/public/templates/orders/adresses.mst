@@ -1,0 +1,29 @@
+{{^isUser}}
+    <div class="card shadow-sm mb-2">
+        <form id="signup-form">
+            <input type="text" class="form-control" id="fullname" placeholder="Fullname">
+            <input type="email" class="form-control" id="email" placeholder="Email">
+            <input type="password" class="form-control" id="password" placeholder="Password">
+
+            <input type="text" class="form-control" id="city" placeholder="City">
+            <input type="number" class="form-control" id="office" placeholder="Nova Poshta office number">
+
+            <button id="submit-btn" type="submit" class="btn btn-dark">Submit</button>
+        </form>
+    </div>
+{{/isUser}}
+{{#isUser}}
+    {{#items}}
+        <div class="card shadow-sm mb-2">
+            <div class="custom-control custom-radio">
+                <input type="radio" id="radio-{{_id}}" name="adress-radio" value="{{_id}}" class="custom-control-input">
+                <label class="custom-control-label" for="radio-{{_id}}">{{city}}, Nova Poshta office: {{office}}</label>
+            </div>
+        </div>
+    {{/items}}
+    {{^items}}
+        <input type="text" class="form-control" id="city" placeholder="City">
+        <input type="number" class="form-control" id="office" placeholder="Nova Poshta office number">
+    {{/items}}
+    <button id="submit-btn" type="submit" class="btn btn-dark">Submit</button>
+{{/isUser}}

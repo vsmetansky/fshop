@@ -101,13 +101,6 @@ export default class Flowers extends Route {
             item: flower
         });
         cards.appendChild(card);
-
-        // history.pushState({}, '', '/flower');
-        // window.dispatchEvent(new CustomEvent('popstate', {
-        //     detail: {
-        //         id: flower._id
-        //     },
-        // }));
     }
 
     private static closeModal() {

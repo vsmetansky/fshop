@@ -1,27 +1,14 @@
 import * as express from 'express'
 import { checkAdmin, checkAuth, checkCurrent } from './auth'
-import Order from '../models/user'
+import { Order, OrderCreator } from '../models/order'
 import Error from '../error'
+import multer = require('multer');
+import User from '../models/user';
 
 const router = express.Router();
+const upload = multer();
 
-router.get('/me', checkAuth, async (req, res) => {
-	try {
-		res.send(await Order.getById(req.user));
-	} catch (err) {
-		res.send(new Error(500, err.message));
-	}
-});
-
-router.delete('/me', checkAuth, async (req, res) => {
-	try {
-		res.send(await Order.delete(req.user));
-	} catch (err) {
-		res.send(new Error(500, err.message));
-	}
-});
-
-router.get('/', checkAdmin, async (req, res) => {
+router.get('/', async (req, res) => {
 	try {
 		res.send(await Order.getAll())
 	} catch (err) {
@@ -29,7 +16,7 @@ router.get('/', checkAdmin, async (req, res) => {
 	}
 });
 
-router.get('/:id', checkAdmin, async (req, res) => {
+router.get('/:id', async (req, res) => {
 	try {
 		const user = await Order.getById(req.params.id);
 		if (user) return res.send(user);
@@ -39,23 +26,30 @@ router.get('/:id', checkAdmin, async (req, res) => {
 	}
 });
 
-router.delete('/:id', checkAdmin, async (req, res) => {
+router.delete('/:id', async (req, res) => {
 	try {
-		res.send(await Order.delete(req.params.id));
+		const deletedOrder = await Order.delete(req.params.id);
+		const consumer = await User.getById(deletedOrder.consumer);
+		consumer.orders = consumer.orders.filter((order: any) => order._id !== deletedOrder._id);
+		await User.update(consumer);
+		res.send(deletedOrder);
 	} catch (err) {
 		res.send(new Error(500, err.message));
 	}
 });
 
-router.post('/:id', async (req, res) => {
+router.post('/', upload.single(), async (req, res) => {
 	try {
-		//res.send(await User.insert(new User()))
+		const data = req.body;
+		const order = await OrderCreator.makeItem({ consumer: data.consumer, items: data.items, adress: data.adress });
+		res.send(order);
 	} catch (err) {
+		console.log(err.message);
 		res.send(new Error(500, err.message));
 	}
 });
 
-router.put('/:id', checkAdmin, async (req, res) => {
+router.put('/:id', async (req, res) => {
 	try {
 		//res.send(await User.update())
 	} catch (err) {

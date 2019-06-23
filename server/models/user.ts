@@ -1,6 +1,6 @@
 import mongoose, { Schema, Query } from 'mongoose';
 
-import Storage from './storage'
+import { Storage } from './storage'
 
 const UserSchema: Schema = new Schema({
     email: { type: String, required: true },
@@ -19,21 +19,17 @@ export default class User extends Storage {
     orders: any[] = [];
     adresses: any[] = [];
 
-    constructor(_email: string = '', _password: string = '', _fullname: string = '', _admin: boolean = false) {
+    protected static model: any = mongoose.model('User', UserSchema);
+    constructor(_email: string, _password: string, _fullname: string, _admin: boolean = false) {
         super();
         this.email = _email;
         this.password = _password;
         this.fullname = _fullname;
         this.admin = _admin;
     }
-    protected static get model() {
-        return UserModel;
-    }
-    protected static async populator(items: Query<User>) {
+    protected static async populator(items: Query<any>) {
         return items.populate('orders').populate('adresses').exec();
     }
 }
-
-const UserModel = mongoose.model('User', UserSchema);
 
 //use fckn builder

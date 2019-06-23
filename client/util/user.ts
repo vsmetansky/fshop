@@ -3,17 +3,22 @@ declare let axios: any;
 export default class User {
     private constructor() { }
     static isLoggedIn(user: any) {
-        return user.email !== undefined;
+        if (user !== undefined)
+            return user.email !== undefined;
+        return false;
     }
     static isError(user: any) {
-        return user.code !== undefined;
+        if (user !== undefined)
+            return user.code !== undefined;
+        return false;
     }
     static async isAdmin(user: any) {
-        if (User.isLoggedIn(user)) 
+        if (User.isLoggedIn(user))
             return user.admin;
         return false;
     }
     static async getCurUser() {
-        return (await axios.get('http://localhost:3000/users/me')).data;
+        const user = (await axios.get('http://localhost:3000/users/me')).data;
+        return user.email === undefined ? undefined : user;
     }
 }

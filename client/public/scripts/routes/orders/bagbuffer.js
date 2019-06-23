@@ -17,6 +17,8 @@ class BagBuffer extends RouteProxy {
         });
         window.addEventListener(BagCheckoutEvent, (event) => {
             this.items.length = 0;
+            history.pushState({}, '', '/flowers');
+            window.dispatchEvent(new Event('popstate'));
         });
     }
     static render(data, routeData = undefined) {

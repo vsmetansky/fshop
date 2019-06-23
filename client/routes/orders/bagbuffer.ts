@@ -8,13 +8,15 @@ class BagBuffer extends RouteProxy {
     static items: any[] = [];
     static route: any = Bag;
     protected static adress = '/bag';
-    static userState: any = BagBuffer.route.userState;    
+    static userState: any = BagBuffer.route.userState;
     static listen() {
         window.addEventListener(BagBufferEvent, (event: any) => {
             this.items.push(event.detail.item);
         });
         window.addEventListener(BagCheckoutEvent, (event: any) => {
             this.items.length = 0;
+            history.pushState({}, '', '/flowers');
+            window.dispatchEvent(new Event('popstate'));
         });
     }
     static async render(data: any, routeData: any = undefined) {

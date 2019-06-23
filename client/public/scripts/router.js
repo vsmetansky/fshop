@@ -10,6 +10,7 @@ import App from './app.js';
 import AppNav from './appnav.js';
 import User from './util/user.js';
 import { UserStateType } from './util/userstate.js';
+//subject
 export default class Router {
     constructor() { }
     static init(routes) {
@@ -20,6 +21,7 @@ export default class Router {
         window.addEventListener('load', Router.updateRoute);
         window.addEventListener('popstate', Router.updateRoute);
     }
+    //notify
     static updateRoute(event) {
         return __awaiter(this, void 0, void 0, function* () {
             let curRoute = undefined;
@@ -44,4 +46,4 @@ export default class Router {
         });
     }
 }
-Router.routes = [];
+Router.routes = []; //observers

@@ -3,8 +3,9 @@ import AppNav from './appnav.js';
 import User from './util/user.js';
 import { UserStateType } from './util/userstate.js';
 
+//subject
 export default class Router {
-    static routes: any = [];
+    static routes: any = []; //observers
     private constructor() { }
     private static init(routes: any[]) {
         routes.forEach(r => Router.routes.push(r));
@@ -14,6 +15,7 @@ export default class Router {
         window.addEventListener('load', Router.updateRoute)
         window.addEventListener('popstate', Router.updateRoute);
     }
+    //notify
     private static async updateRoute(event: any) {
         let curRoute: any = undefined;
         let curState = await Router.getCurUserState();

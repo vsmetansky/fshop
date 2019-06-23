@@ -1,7 +1,7 @@
-import Storage from './storage'
+import { Storage } from './storage'
 import Photo from './util/photo'
 
-import mongoose, { Schema } from 'mongoose';
+import mongoose, { Schema, Query } from 'mongoose';
 
 const FlowerSchema: Schema = new Schema({
     name: { type: String, required: true },
@@ -13,18 +13,15 @@ export default class Flower extends Storage {
     name: string;
     price: number;
     photo: Photo;
+
+    protected static model: any =  mongoose.model('Flower', FlowerSchema);
     constructor(_name: string, _price: number, _photo: Photo) {
         super();
         this.price = _price;
         this.name = _name;
         this.photo = _photo;
     }
-    protected static get model() {
-        return FlowerModel;
-    }
-    protected static async populator(items: any) {
-        return items.sort('-date').exec();
+    protected static async populator(items: Query<any>) {
+        return await items.sort('-date').exec();
     }
 }
-
-const FlowerModel = mongoose.model('Flower', FlowerSchema);

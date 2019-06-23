@@ -1,0 +1,20 @@
+<div class="container">
+    <div class="row">
+        <div id="order-container" class="col-md-12">
+
+            <div id="order-container-items">
+                {{#items}}
+                    <div id="{{_id}}" class="card shadow-sm mb-5">
+                        <div class="card-body pb-0">
+                            <div class="float-left">
+                                <h6>Order number: {{number}}</h6>
+                                <small>{{consumer.fullname}}</small>
+                            </div>
+                            <button class="delete-btn float-right" data-id="{{_id}}">Delete</button>
+                        </div>
+                    </div>
+                {{/items}}
+            </div>
+        </div>
+    </div>
+</div>

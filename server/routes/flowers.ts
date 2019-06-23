@@ -19,11 +19,9 @@ router.get('/', async (req, res) => {
 	}
 });
 
-router.get('/:id', checkAdmin, async (req, res) => {
+router.get('/:id', async (req, res) => {
 	try {
-		const flower = await Flower.getById(req.params.id);
-		if (flower) return res.send(flower);
-		res.send(new Error(404, 'bullshit'));
+		res.send(await Flower.getById(req.params.id));
 	} catch (err) {
 		res.send(new Error(500, err.message));
 	}
@@ -46,7 +44,7 @@ router.post('/', upload.single('photo'), async (req, res) => {
 		const photo: any = await CloudPhoto.add(fileObject.buffer);
 		const flower = await Flower.insert(new Flower(data.name, data.price, new Photo(photo.public_id, photo.secure_url)));
 		res.send(flower);
-	} catch(err) {
+	} catch (err) {
 		console.log(err.message);
 		res.send(new Error(500, err.message));
 	}

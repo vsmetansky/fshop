@@ -2,7 +2,7 @@ abstract class Route {
     protected static adress: string;
     protected static links: any[];
     static userState: any;
-    //abstract method
+    //template method
     static async render(data: any, routeData: any = undefined) {
         const app = document.getElementById('app');
         if (app !== null) {
@@ -11,9 +11,9 @@ abstract class Route {
             this.setLinks(app);
             this.setLinkHandlers(app, routeData);
         }
-    }    
+    }
     //primitive method
-    protected static async getRouteData(data: any, routeData: any) {}
+    protected static async getRouteData(data: any, routeData: any) { }
     //primitive method
     protected static async renderTemplate(app: Element, routeData: any) { }
     //primitive method

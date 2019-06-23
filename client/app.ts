@@ -1,9 +1,6 @@
 import Router from './router.js'
 import AppNav from './appnav.js'
 
-declare let Mustache: any;
-declare let axios: any;
-
 //routes
 import Main from './routes/main.js'
 import Flower from './routes/flowers/flower.js'
@@ -18,6 +15,7 @@ const ROUTES: any[] = [Main, Flowers, Flower, Auth, Profile, Users, Orders, BagB
 
 //main app
 export default class App {
+    //defindes current state of the app
     private static _currentRoute: any;
     private constructor() { }
     static async setCurrentRoute(route: any, data: any) {

@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import { UserState, UserStateType } from '../../util/userstate.js';
 import { Route } from '../route.js';
 import User from '../../util/user.js';
+import { BagCheckoutEvent } from './bagbuffer.js';
 export default class Bag extends Route {
     static renderTemplate(app, routeData) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -59,14 +60,92 @@ export default class Bag extends Route {
         return __awaiter(this, void 0, void 0, function* () {
             const template = (yield axios.get('http://localhost:3000/templates/orders/adresses.mst')).data;
             const user = yield User.getCurUser();
-            Mustache.render(template, {
-                items: user ? user.adresses : [],
+            const comp = Mustache.render(template, {
+                items: user !== undefined ? user.adresses : [],
                 isUser: this.userState.cur === UserStateType.USER ? true : false
             });
+            const compContainer = document.getElementById('order-container-items');
+            this.replaceChildren(compContainer, comp);
+            yield this.setAdressHandlers(compContainer, user, routeData);
         });
     }
-    static checkout() {
+    static replaceChildren(parent, newChild) {
+        parent.innerHTML = newChild;
+    }
+    static setAdressHandlers(parent, user, routeData) {
         return __awaiter(this, void 0, void 0, function* () {
+            const submitButton = parent.querySelector('#submit-btn');
+            submitButton.addEventListener('click', (event) => event.preventDefault());
+            if (user !== undefined) {
+                submitButton.addEventListener('click', () => __awaiter(this, void 0, void 0, function* () {
+                    const adresses = Array.from(parent.querySelectorAll('.custom-control-input'));
+                    let curAdress = adresses.find((a) => a.checked);
+                    if (curAdress === undefined) {
+                        const city = parent.querySelector('#city').value;
+                        const number = parent.querySelector('#office').value;
+                        const adressData = new FormData();
+                        adressData.set('city', city);
+                        adressData.set('office', number);
+                        adressData.set('consumer', user._id);
+                        const adress = (yield axios.post('http://localhost:3000/adresses', adressData, {
+                            headers: {
+                                'Content-Type': 'multipart/form-data'
+                            }
+                        })).data;
+                        curAdress = adress._id;
+                    }
+                    else {
+                        curAdress = curAdress.value;
+                    }
+                    const orderData = new FormData();
+                    orderData.set('adress', curAdress);
+                    orderData.set('consumer', user._id);
+                    orderData.set('items', JSON.stringify(routeData));
+                    const order = (yield axios.post('http://localhost:3000/orders', orderData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    })).data;
+                    window.dispatchEvent(new CustomEvent(BagCheckoutEvent));
+                }));
+            }
+            else {
+                submitButton.addEventListener('click', () => __awaiter(this, void 0, void 0, function* () {
+                    const fullname = parent.querySelector('#fullname').value;
+                    const email = parent.querySelector('#email').value;
+                    const password = parent.querySelector('#password').value;
+                    const userData = new FormData();
+                    userData.set('email', email);
+                    userData.set('password', password);
+                    userData.set('fullname', fullname);
+                    const user = (yield axios.post('http://localhost:3000/users', userData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    })).data;
+                    const city = parent.querySelector('#city').value;
+                    const number = parent.querySelector('#office').value;
+                    const adressData = new FormData();
+                    adressData.set('city', city);
+                    adressData.set('office', number);
+                    adressData.set('consumer', user._id);
+                    const adress = (yield axios.post('http://localhost:3000/adresses', adressData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    })).data;
+                    const orderData = new FormData();
+                    orderData.set('adress', adress._id);
+                    orderData.set('consumer', user._id);
+                    orderData.set('items', JSON.stringify(routeData));
+                    yield axios.post('http://localhost:3000/orders', orderData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    });
+                    window.dispatchEvent(new CustomEvent(BagCheckoutEvent));
+                }));
+            }
         });
     }
 }

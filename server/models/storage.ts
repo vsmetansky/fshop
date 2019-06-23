@@ -1,9 +1,10 @@
 import { Query } from "mongoose";
 
-export default abstract class Storage {
+abstract class Storage {
+    protected static model: any;
     static async insert(x: any) {
         const Model = this.model;
-        return new Model(x).save();
+        return await new Model(x).save();
     }
     static async update(x: any) {
         return this.model.findByIdAndUpdate(x._id, x);
@@ -13,17 +14,24 @@ export default abstract class Storage {
     }
     //template method
     static async getAll() {
-        return Storage.populator(await this.model.find());
+        return await this.populator(this.model.find());
     }
     //template method
     static async getById(id: string) {
-        return Storage.populator(await this.model.findById(id));
+        return await this.populator(this.model.findById(id));
     }
     //primitive method
     protected static async populator(items: Query<any>) {
-        return items;
-    }
-    protected static get model(): any { 
-        return undefined;
+        return await items;
     }
 };
+
+abstract class StorageCreator {
+    //factory method
+    static async makeItem(params: any): Promise<any> { };
+}
+
+export {
+    Storage,
+    StorageCreator
+}
