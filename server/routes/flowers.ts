@@ -2,7 +2,7 @@ import * as express from 'express'
 import multer from 'multer'
 
 import { checkAdmin, checkAuth, checkCurrent } from './auth'
-import Flower from '../models/flower'
+import { Flower, FlowerBuilder, FlowerBuilderDirector } from '../models/flower'
 import Error from '../error'
 import CloudPhoto from './util/cloudphoto'
 import Photo from '../models/util/photo';
@@ -42,7 +42,13 @@ router.post('/', upload.single('photo'), async (req, res) => {
 		let data = req.body;
 		const fileObject: any = req.file;
 		const photo: any = await CloudPhoto.add(fileObject.buffer);
-		const flower = await Flower.insert(new Flower(data.name, data.price, new Photo(photo.public_id, photo.secure_url)));
+
+		const flowerMaker = new FlowerBuilderDirector(new FlowerBuilder()
+			.buildName(data.name)
+			.buildPrice(data.price)
+			.buildPhoto(new Photo(photo.public_id, photo.secure_url)));
+
+		const flower = await Flower.insert(flowerMaker.makeFlower());
 		res.send(flower);
 	} catch (err) {
 		console.log(err.message);
